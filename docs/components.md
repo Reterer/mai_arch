@@ -18,7 +18,6 @@ System_Ext(web_site, "Клинтский веб-сайт", "HTML, CSS, JavaScrip
 System_Ext(logisics_system, "Система логистики")
 
 System_Boundary(delivery_system, "Служба доставки") {
-  Container(endpoint_service, "Пользовательский сервис", "C++", "Проксирование запросов польозвателя во внутренние сервисы", $tags = "microService")
    Container(client_service, "Сервис пользователей", "C++", "Сервис управления пользователями", $tags = "microService")    
    Container(item_service, "Сервис посылок", "C++", "Сервис управления посылками", $tags = "microService") 
    Container(delivery_service, "Сервис доставок", "C++", "Сервис управления доставками", $tags = "microService")
@@ -28,20 +27,17 @@ System_Boundary(delivery_system, "Служба доставки") {
 
 Rel(user, web_site, "Регистрация, Просмотр/Создание/Получение посылок, Просмтр/Создание доставок")
 
-Rel(web_site, endpoint_service, "Api запросы к службе доставки", "HTTP")
-
-Rel(endpoint_service, client_service, "Работа с пользователями", "HTTP")
+Rel(web_site, client_service, "Работа с пользователями", "HTTP")
 Rel(client_service, db, "INSERT/SELECT/UPDATE", "SQL")
 
-Rel(endpoint_service, item_service, "Работа с посылками", "HTTP")
+Rel(web_site, item_service, "Работа с посылками", "HTTP")
 Rel(item_service, db, "INSERT/SELECT/UPDATE", "SQL")
 
-Rel(endpoint_service, delivery_service, "Работа с доставками", "HTTP")
+Rel(web_site, delivery_service, "Работа с доставками", "HTTP")
 Rel(delivery_service, db, "INSERT/SELECT/UPDATE", "SQL")
 
 Rel(delivery_service, logisics_system, "Оповещения о новых заказах", "HTTP")
 Rel(logisics_system, delivery_service, "Оповещения о изменении статуса доставки", "HTTP")
-Rel(delivery_service, db, "INSERT/SELECT/UPDATE", "SQL")
 
 @enduml
 ```
@@ -49,17 +45,10 @@ Rel(delivery_service, db, "INSERT/SELECT/UPDATE", "SQL")
 
 API приблизительный, он будет уточняться.
 
-### Пользовательский сервис
+### Сервис пользователей
 **API**:
 - POST api/v1/auth/register
     - регистрация нового пользователя (запрос в сервис пользователей)
-
-- api/v1/users/; api/v1/items/; api/v1/deliveries
-  - basic аунтентификация по username и паролю
-  - Прокисруют их в соответствующие сервисы
-
-### Сервис пользователей
-**API**:
 -	POST api/v1/users 
     - Создание нового пользователя
 - GET/PUT api/v1/usres/{user_id}
