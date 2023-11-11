@@ -13,11 +13,15 @@ type User struct {
 	Usernmame string `json:"username"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
-	PassHash  string `json:"-"`
+}
+
+type UserWithPass struct {
+	User
+	Passhash string
 }
 
 type UpdateUserRequest struct {
-	UserID    UserID  `json:"user_id,omitempty"`
+	UserID    UserID  `json:"-"`
 	Usernmame *string `json:"username,omitempty"`
 	FirstName *string `json:"first_name,omitempty"`
 	LastName  *string `json:"last_name,omitempty"`

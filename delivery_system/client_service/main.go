@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"delivery_system/client_service/config"
 	"delivery_system/client_service/internal/api"
 	"delivery_system/client_service/internal/repository"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
@@ -28,7 +30,7 @@ func main() {
 	}
 
 	// Репозиторий
-	repo := repository.New(&cfg.Repository)
+	repo := repository.NewMemory(&cfg.Repository, nil)
 
 	// Бизнес-логика
 	serv := service.New(&cfg.Service, repo)
@@ -52,9 +54,12 @@ func main() {
 	signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
 
 	<-exit
-	if err := publicServer.Shutdown(); err != nil {
+	ctx, cancel := context.WithTimeout(context.TODO(), 10*time.Second)
+
+	if err := publicServer.ShutdownWithContext(ctx); err != nil {
 		zap.L().Error("failed shutdown public server", zap.Error(err))
 	}
 
+	cancel()
 	zap.L().Info("shutdown")
 }
