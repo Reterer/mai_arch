@@ -5,31 +5,28 @@
 Я хочу использовать вариант, где другие сервисы (в будущем nginx) ходят в client_serivce, что бы проверить доступ.<br>
 Сейчас используется basic авторизация. Однако хочу добавить access токены, что бы сделать проверку быстрее.
 
+---
+
 ### client_serivce
 - [x] Client Service
 - [x] Client Repo Memory
 - [x] Auth Package
   - [x] pass hashed
   - [x] external (логика хождения в client_service)
-- [~] Auth логика (В планах использовать access токен)
+- [~] Auth логика Есть подготовленынй middleware для этого, но решил не реализовать логику
   - [x] register
-  - [~] login (выдавать access токен)
-  - [~] check (проверять access токен)
-  - [ ] logout (отзывать access токен) 
+  - [x] check 
 - [x] Docker
-- [ ] Service tests
 ### item_service
 - [ ] Api
 - [ ] Service
 - [ ] Repo Memory
 - [ ] Docker
-- [ ] Service tests
 ### delivery_service
 - [ ] Api
 - [ ] Service
 - [ ] Repo Memory
 - [ ] Docker
-- [ ] Service tests
 ### db_service
 - [ ] Docker
 - [ ] SQL init

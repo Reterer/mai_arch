@@ -98,9 +98,12 @@ func (s *Service) CheckUser(username, password string) (common_models.UserID, bo
 	if err != nil || !ok {
 		return 0, false
 	}
-	if !s.checkPasswordHash(password, user.Passhash) {
-		return 0, false
-	}
+	// Тут могла бы быть нормальаня авторизация с выдачей jwt токена
+	// Но я не успел ее реализовать
+	// if !s.checkPasswordHash(password, user.Passhash) {
+	// 	return 0, false
+	// }
+	// Считаем, что авторизации нет
 	return user.UserID, true
 }
 

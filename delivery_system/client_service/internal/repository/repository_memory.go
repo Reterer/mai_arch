@@ -55,10 +55,6 @@ func (r *RepositoryMemory) genUserID() common_models.UserID {
 	return next
 }
 
-func (r *RepositoryMemory) addUser(user common_models.UserWithPass) {
-	r.users = append(r.users)
-}
-
 func (r *RepositoryMemory) AddUser(req common_models.RegisterUserRequest) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
