@@ -1,6 +1,13 @@
 package repository
 
-import "delivery_system/item_service/config"
+import (
+	"delivery_system/item_service/config"
+	"errors"
+)
+
+var (
+	NotExistsErr = errors.New("no exists")
+)
 
 type Repository struct {
 	cfg *config.Repository

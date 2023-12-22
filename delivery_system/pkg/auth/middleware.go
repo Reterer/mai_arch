@@ -111,3 +111,9 @@ func (a *Auth) GetAuthUserIDValue(ctx *fasthttp.RequestCtx) (common_models.UserI
 	}
 	return common_models.UserID(user_id), nil
 }
+
+func NewDefaultChecker() CheckUserFunc {
+	return func(username, password string) (common_models.UserID, bool) {
+		return 42, true
+	}
+}

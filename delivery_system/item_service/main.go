@@ -6,6 +6,7 @@ import (
 	"delivery_system/item_service/internal/api"
 	"delivery_system/item_service/internal/repository"
 	"delivery_system/item_service/internal/service"
+	"delivery_system/pkg/common_models"
 	"delivery_system/pkg/logger"
 	"os"
 	"os/signal"
@@ -30,10 +31,13 @@ func main() {
 	}
 
 	// Репозиторий
-	repo := repository.NewMemory(&cfg.Repository, nil)
+	itemRepo := repository.NewItemMemory(&cfg.Repository, nil)
+	userRepo := repository.NewUserMock(&cfg.Repository, []common_models.User{
+		{UserID: 42, Usernmame: "test"},
+	})
 
 	// Бизнес-логика
-	serv := service.New(&cfg.Service, repo)
+	serv := service.New(&cfg.Service, itemRepo, userRepo)
 
 	// Api
 	public := api.New(&cfg.Api, serv)

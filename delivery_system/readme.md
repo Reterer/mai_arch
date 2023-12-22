@@ -18,9 +18,9 @@
   - [x] check 
 - [x] Docker
 ### item_service
-- [ ] Api
-- [ ] Service
-- [ ] Repo Memory
+- [x] Api
+- [x] Service
+- [x] Repo Memory
 - [ ] Docker
 ### delivery_service
 - [ ] Api

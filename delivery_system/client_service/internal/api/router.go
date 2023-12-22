@@ -106,7 +106,7 @@ func (r *Router) checkUser(ctx *fasthttp.RequestCtx) {
 }
 
 func (r *Router) getUser(ctx *fasthttp.RequestCtx) {
-	user_id, err := r.getUserIDParam(ctx)
+	user_id, err := getUserIDParam(ctx)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
 		return
@@ -123,7 +123,7 @@ func (r *Router) getUser(ctx *fasthttp.RequestCtx) {
 
 func (r *Router) updateUser(ctx *fasthttp.RequestCtx) {
 	// Получение данных
-	user_id, err := r.getUserIDParam(ctx)
+	user_id, err := getUserIDParam(ctx)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
 		return
@@ -209,7 +209,7 @@ func (r *Router) search(ctx *fasthttp.RequestCtx) {
 }
 
 // Возвращает user_id из URL пути .../{user_id}
-func (r *Router) getUserIDParam(ctx *fasthttp.RequestCtx) (common_models.UserID, error) {
+func getUserIDParam(ctx *fasthttp.RequestCtx) (common_models.UserID, error) {
 	user_id, err := strconv.ParseUint(ctx.UserValue(UserIDParam).(string), 10, 64)
 	if err != nil {
 		return 0, err
