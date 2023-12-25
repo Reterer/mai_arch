@@ -2,13 +2,11 @@ package api
 
 import (
 	"delivery_system/item_service/config"
-	"delivery_system/pkg/auth"
 	"delivery_system/pkg/common_models"
 	fasthttputils "delivery_system/pkg/fasthttp_utils"
 	"delivery_system/pkg/validator_utils"
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/fasthttp/router"
 	"github.com/go-playground/validator/v10"
@@ -17,6 +15,7 @@ import (
 
 const (
 	ItemIDParam   = "item_id"
+	UserIDParam   = "user_id"
 	UsernameParam = "username"
 )
 
@@ -32,7 +31,6 @@ type Router struct {
 	cfg *config.Api
 	v   *validator.Validate
 	s   Service
-	a   *auth.Auth
 }
 
 func New(cfg *config.Api, service Service) *Router {
@@ -41,24 +39,18 @@ func New(cfg *config.Api, service Service) *Router {
 		cfg:    cfg,
 		v:      validator_utils.New(),
 		s:      service,
-		a:      auth.New(auth.NewDefaultChecker()), // TODO
 	}
 
 	v1 := r.Group("/api/v1")
-	v1.POST("/items", r.a.AuthMiddleware(r.createItem)) // Нужна авторизация
+	v1.POST("/items", r.createItem)
 	v1.GET("/items/{item_id}", r.getItem)
-	v1.PATCH("/items/{item_id}", r.a.AuthMiddleware(r.patchItem)) // Нужна авторизация
-	v1.GET("/items_by_username/{username}", r.getItemsByUsername)
+	v1.PATCH("/items/{item_id}", r.patchItem)
+	v1.GET("/items_by_user_id/{user_id}", r.getItemsByUserID)
 
 	return &r
 }
 
 func (r *Router) createItem(ctx *fasthttp.RequestCtx) {
-	userID, err := r.a.GetAuthUserIDValue(ctx)
-	if err != nil {
-		fasthttputils.WriteJson(ctx, http.StatusUnauthorized, common_models.HttpError{Error: err.Error()})
-		return
-	}
 	// Получение данных
 	var req common_models.CreateItemRequest
 	body := ctx.Request.Body()
@@ -66,7 +58,6 @@ func (r *Router) createItem(ctx *fasthttp.RequestCtx) {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
 		return
 	}
-	req.OwnerID = userID
 
 	// Валидация данных
 	if err := r.v.Struct(req); err != nil {
@@ -75,7 +66,7 @@ func (r *Router) createItem(ctx *fasthttp.RequestCtx) {
 	}
 
 	// Выполнение запроса
-	err = r.s.CreateItem(req)
+	err := r.s.CreateItem(req)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusInternalServerError, common_models.HttpError{Error: err.Error()})
 		return
@@ -84,13 +75,13 @@ func (r *Router) createItem(ctx *fasthttp.RequestCtx) {
 }
 
 func (r *Router) getItem(ctx *fasthttp.RequestCtx) {
-	itemID, err := getItemIDParam(ctx)
+	itemID, err := fasthttputils.GetUint64Param(ctx, ItemIDParam)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
 		return
 	}
 	// Выполнение запроса
-	item, err := r.s.GetItem(itemID)
+	item, err := r.s.GetItem(common_models.ItemID(itemID))
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusInternalServerError, common_models.HttpError{Error: err.Error()})
 		return
@@ -100,13 +91,7 @@ func (r *Router) getItem(ctx *fasthttp.RequestCtx) {
 }
 
 func (r *Router) patchItem(ctx *fasthttp.RequestCtx) {
-	userID, err := r.a.GetAuthUserIDValue(ctx)
-	if err != nil {
-		fasthttputils.WriteJson(ctx, http.StatusUnauthorized, common_models.HttpError{Error: err.Error()})
-		return
-	}
-
-	itemID, err := getItemIDParam(ctx)
+	itemID, err := fasthttputils.GetUint64Param(ctx, ItemIDParam)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
 		return
@@ -120,9 +105,9 @@ func (r *Router) patchItem(ctx *fasthttp.RequestCtx) {
 	}
 
 	item := common_models.Item{
-		ItemID:  itemID,
+		ItemID:  common_models.ItemID(itemID),
 		Data:    req.Data,
-		OwnerID: userID,
+		OwnerID: req.OwnerID,
 	}
 
 	// Выполнение запроса
@@ -135,7 +120,7 @@ func (r *Router) patchItem(ctx *fasthttp.RequestCtx) {
 	ctx.SetStatusCode(http.StatusOK)
 }
 
-func (r *Router) getItemsByUsername(ctx *fasthttp.RequestCtx) {
+func (r *Router) getItemsByUserID(ctx *fasthttp.RequestCtx) {
 	username := ctx.UserValue(UsernameParam).(string)
 
 	// Выполнение запроса
@@ -146,13 +131,4 @@ func (r *Router) getItemsByUsername(ctx *fasthttp.RequestCtx) {
 	}
 
 	fasthttputils.WriteJson(ctx, http.StatusOK, items)
-}
-
-// Возвращает item_id из URL пути .../{item_id}
-func getItemIDParam(ctx *fasthttp.RequestCtx) (common_models.ItemID, error) {
-	itemID, err := strconv.ParseUint(ctx.UserValue(ItemIDParam).(string), 10, 64)
-	if err != nil {
-		return 0, err
-	}
-	return common_models.ItemID(itemID), nil
 }

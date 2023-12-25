@@ -4,7 +4,6 @@ import (
 	"context"
 	"delivery_system/delivery_service/config"
 	"delivery_system/delivery_service/internal/api"
-	"delivery_system/delivery_service/internal/repository"
 	"delivery_system/delivery_service/internal/service"
 	"delivery_system/pkg/logger"
 	"os"
@@ -30,7 +29,7 @@ func main() {
 	}
 
 	// Репозиторий
-	repo := repository.NewMemory(&cfg.Repository, nil)
+	// repo := repository.NewMemory(&cfg.Repository, nil)
 
 	// Бизнес-логика
 	serv := service.New(&cfg.Service, repo)

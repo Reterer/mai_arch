@@ -3,8 +3,8 @@ package common_models
 type ItemID uint64
 
 type CreateItemRequest struct {
-	Data    string `json:"data"`
-	OwnerID UserID `json:"-"`
+	OwnerID UserID `json:"owner_id" validate:"required"`
+	Data    string `json:"data" validate:"required"`
 }
 
 type Item struct {
@@ -14,5 +14,6 @@ type Item struct {
 }
 
 type PatchItemRequest struct {
-	Data string `json:"data"`
+	OwnerID UserID `json:"owner_id" validate:"required"`
+	Data    string `json:"data" validate:"required"`
 }

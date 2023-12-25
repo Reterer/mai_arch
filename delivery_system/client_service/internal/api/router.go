@@ -7,7 +7,6 @@ import (
 	fasthttputils "delivery_system/pkg/fasthttp_utils"
 	"delivery_system/pkg/validator_utils"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -36,7 +35,6 @@ type Router struct {
 	cfg *config.Api
 	v   *validator.Validate
 	s   Service
-	a   *auth.Auth
 }
 
 func New(cfg *config.Api, service Service) *Router {
@@ -45,15 +43,14 @@ func New(cfg *config.Api, service Service) *Router {
 		cfg:    cfg,
 		v:      validator_utils.New(),
 		s:      service,
-		a:      auth.New(service.CheckUser),
 	}
 
 	v1 := r.Group("/api/v1")
 	v1.POST("/auth/register", r.registerUser)
 	v1.POST("/auth/check", r.checkUser)
-	v1.GET(fmt.Sprintf("/users/{%s}", UserIDParam), r.a.AuthMiddleware(r.getUser))
-	v1.PATCH(fmt.Sprintf("/users/{%s}", UserIDParam), r.a.AuthMiddleware(r.updateUser))
-	v1.GET("/search", r.a.AuthMiddleware(r.search))
+	v1.GET("/users/{user_id}", r.getUser)
+	v1.PATCH("/users/{user_id}", r.updateUser)
+	v1.GET("/search", r.search)
 
 	return &r
 }
@@ -126,16 +123,6 @@ func (r *Router) updateUser(ctx *fasthttp.RequestCtx) {
 	user_id, err := getUserIDParam(ctx)
 	if err != nil {
 		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
-		return
-	}
-	auth_user_id, err := r.a.GetAuthUserIDValue(ctx)
-	if err != nil {
-		fasthttputils.WriteJson(ctx, http.StatusBadRequest, common_models.HttpError{Error: err.Error()})
-		return
-	}
-	// Проверяем, что пользователь хочет изменить свои параметры
-	if user_id != auth_user_id {
-		fasthttputils.WriteJson(ctx, http.StatusForbidden, common_models.HttpError{Error: "auth_user_id != user_id"})
 		return
 	}
 
