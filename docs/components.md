@@ -59,10 +59,10 @@ API приблизительный, он будет уточняться.
 **API**:
 - POST api/v1/items
   - Создание посылки
-- GET/PUT apiv/v1/items/{item_id}
+- GET/PATCH apiv/v1/items/{item_id}
   - Получение информации о посылке
   - Обновление информации посылки
-- GET api/v1/items_by_username/{user_id} 
+- GET api/v1/items_by_user/{user_id} 
   - Получение списка посылок пользователя
 
 ### Сервис доставок
