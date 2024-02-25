@@ -1,0 +1,52 @@
+services:
+
+  database:
+    image: mariadb:11
+    container_name: database
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=password
+    volumes:
+      - .\mariadb\init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - backend
+    ports:
+      - 3306:3306
+  # service_authorization:
+  #   build:
+  #     context: ./backend/
+  #     dockerfile: ./service_authorization/Dockerfile
+  #   container_name: service_authorization
+  #   restart: always
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - 8001:8000
+
+  # service_message:
+  #   build:
+  #     context: ./backend/
+  #     dockerfile: ./service_message/Dockerfile
+  #   container_name: service_message
+  #   restart: always
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - 8002:8000
+
+  # service_topics:
+  #   build:
+  #     context: ./backend/
+  #     dockerfile: ./service_topics/Dockerfile
+  #   container_name: service_topics
+  #   restart: always
+  #   networks:
+  #     - backend
+  #   ports:
+  #     - 8003:8000
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
