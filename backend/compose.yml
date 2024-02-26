@@ -19,12 +19,12 @@ services:
     container_name: service_users
     restart: always
     environment:
-      - DB_ADDR="root:password@tcp(database:3306)/delivery"
-      - HOST=":8000"
+      - DB_ADDR=root:password@tcp(database:3306)/delivery
+      - HOST=0.0.0.0:8080
     networks:
       - backend
     ports:
-      - 8080:8000
+      - 8081:8080
 
   service_items:
     build:
@@ -32,25 +32,25 @@ services:
     container_name: service_items
     restart: always
     environment:
-      - DB_ADDR="root:password@tcp(database:3306)/delivery"
-      - HOST=":8000"
+      - DB_ADDR=root:password@tcp(database:3306)/delivery
+      - PORT=0.0.0.0:8080
     networks:
       - backend
     ports:
-      - 8082:8000
+      - 8082:8080
 
   service_deliveries:
     build:
       dockerfile: ./deliveries/Dockerfile
     container_name: service_deliveries
     environment:
-      - DB_ADDR="root:password@tcp(database:3306)/delivery"
-      - HOST=":8000"
+      - DB_ADDR=root:password@tcp(database:3306)/delivery
+      - HOST=0.0.0.0:8080
     restart: always
     networks:
       - backend
     ports:
-      - 8083:8000
+      - 8083:8080
 
 networks:
   backend:

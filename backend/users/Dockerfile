@@ -24,5 +24,5 @@ FROM alpine:3.18
 WORKDIR /app
 
 COPY --from=build ./app .
-USER app
+
 ENTRYPOINT [ "./app" ]
