@@ -1,0 +1,323 @@
+openapi: 3.0.3
+info:
+  title: mai_arch
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: http://localhost
+  - url: http://127.0.0.1
+  - url: 127.0.0.1
+paths:
+  /api/v1/auth/register:
+    post:
+      tags:
+        - client
+      summary: auth/register
+      description: auth/register
+      operationId: authRegister
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@test.ru
+                first_name:
+                  type: string
+                  example: aaa
+                last_name:
+                  type: string
+                  example: bbb
+                password:
+                  type: string
+                  example: some
+                username:
+                  type: string
+                  example: new
+            examples:
+              auth/register:
+                value:
+                  email: test@test.ru
+                  first_name: aaa
+                  last_name: bbb
+                  password: some
+                  username: new
+      responses:
+        '200':
+          description: ''
+  /api/v1/search:
+    get:
+      tags:
+        - client
+      summary: search
+      description: search
+      operationId: search
+      parameters:
+        - name: first_name
+          in: query
+          schema:
+            type: string
+            example: Ego%
+        - name: last_name
+          in: query
+          schema:
+            type: string
+            example: ''
+        - name: username
+          in: query
+          schema:
+            type: string
+            example: new
+      responses:
+        '200':
+          description: ''
+      security:
+        - basicAuth: []
+  /api/v1/users/1:
+    get:
+      tags:
+        - client
+      summary: get user
+      description: get user
+      operationId: getUser
+      responses:
+        '200':
+          description: ''
+      security:
+        - basicAuth: []
+    patch:
+      tags:
+        - client
+      summary: patch user
+      description: patch user
+      operationId: patchUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: Andrew
+            examples:
+              patch user:
+                value:
+                  first_name: Andrew
+      responses:
+        '200':
+          description: ''
+      security:
+        - basicAuth: []
+  /api/v1/items:
+    post:
+      tags:
+        - item
+      summary: items
+      description: items
+      operationId: items
+      parameters:
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+            example: Thunder Client (https://www.thunderclient.com)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  example: test 2
+                owner_id:
+                  type: number
+                  example: 3
+            examples:
+              items:
+                value:
+                  data: test 2
+                  owner_id: 3
+      responses:
+        '200':
+          description: ''
+  /api/v1/items/{item_id}:
+    get:
+      tags:
+        - item
+      summary: items/{item_id}
+      description: items/{item_id}
+      operationId: itemsItemId
+      parameters:
+        - name: item_id
+          in: query
+          schema:
+            type: string
+            example: '1'
+      responses:
+        '200':
+          description: ''
+    patch:
+      tags:
+        - item
+      summary: items/{item_id}
+      description: items/{item_id}
+      operationId: itemsItemId1
+      parameters:
+        - name: item_id
+          in: query
+          schema:
+            type: string
+            example: '1'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  example: hello world
+            examples:
+              items/{item_id}:
+                value:
+                  data: hello world
+      responses:
+        '200':
+          description: ''
+      security:
+        - basicAuth: []
+    parameters:
+      - name: item_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/items_by_user/{user_id}:
+    get:
+      tags:
+        - item
+      summary: items_by_username/{username}
+      description: items_by_username/{username}
+      operationId: itemsByUsernameUsername
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            example: '3'
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/deliveries:
+    post:
+      tags:
+        - delivery
+      summary: deliveries
+      description: deliveries
+      operationId: deliveries
+      parameters:
+        - name: user-agent
+          in: header
+          schema:
+            type: string
+            example: Thunder Client (https://www.thunderclient.com)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from_user_id:
+                  type: number
+                  example: 1
+                items:
+                  type: array
+                  items:
+                    type: number
+                    example: 1
+                  example:
+                    - 1
+                    - 2
+                    - 3
+                to_addr:
+                  type: string
+                  example: г. Москва ...
+                to_user_id:
+                  type: number
+                  example: 2
+            examples:
+              deliveries:
+                value:
+                  from_user_id: 1
+                  items:
+                    - 1
+                    - 2
+                    - 3
+                  to_addr: г. Москва ...
+                  to_user_id: 2
+      responses:
+        '200':
+          description: ''
+  /api/v1/deliveries_from/{user_id}:
+    get:
+      tags:
+        - delivery
+      summary: deliveries by from uid
+      description: deliveries by from uid
+      operationId: deliveriesByFromUid
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            example: '1'
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+  /api/v1/deliveries_to/{user_id}:
+    get:
+      tags:
+        - delivery
+      summary: deliveries by to uid
+      description: deliveries by to uid
+      operationId: deliveriesByToUid
+      parameters:
+        - name: user_id
+          in: query
+          schema:
+            type: string
+            example: '2'
+      responses:
+        '200':
+          description: ''
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: string
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+tags:
+  - name: client
+  - name: item
+  - name: delivery
