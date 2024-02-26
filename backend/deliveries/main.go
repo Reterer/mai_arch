@@ -32,8 +32,8 @@ func getConfig() *config {
 func main() {
 	cfg := getConfig()
 
-	cfg.dbaddr = "root:password@tcp(localhost:3306)/delivery"
-	cfg.host = "localhost:8083"
+	// cfg.dbaddr = "root:password@tcp(localhost:3306)/delivery"
+	// cfg.host = "localhost:8083"
 
 	db, err := db.InitDB(cfg.dbaddr)
 	if err != nil {
