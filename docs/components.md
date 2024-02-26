@@ -48,36 +48,31 @@ API приблизительный, он будет уточняться.
 ### Сервис пользователей
 **API**:
 - POST api/v1/auth/register
-    - регистрация нового пользователя (запрос в сервис пользователей)
--	POST api/v1/users 
-    - Создание нового пользователя
-- GET/PUT api/v1/usres/{user_id}
+    - регистрация нового пользователя
+- GET/PATCH api/v1/usres/{user_id}
     - Получение информации о пользователе
     - Обновление информации о пользователе
-- GET api/v1/search?text="..." 
+- GET api/v1/search?first_name="..."&last_name="..."&username="..."
   - Возвращает несколько возможных пользователей по логину либо по маске имени и фамилии
 
 ### Сервис посылок
 **API**:
 - POST api/v1/items
   - Создание посылки
-- GET/PUT apiv/v1/items/{item_id}
+- GET/PATCH apiv/v1/items/{item_id}
   - Получение информации о посылке
   - Обновление информации посылки
-- GET api/v1/items_by_username/{username} 
+- GET api/v1/items_by_user/{user_id} 
   - Получение списка посылок пользователя
 
 ### Сервис доставок
 **API**:
 - POST api/v1/deliveries
   - Создание доставки от пользователя к пользователю
-- GET api/v1/deliveries_from/{username}
+- GET api/v1/deliveries_from/{user_id}
   - Получение информации о доставке по получателю
-- GET api/v1/deliveries_to/{username}
+- GET api/v1/deliveries_to/{user_id}
   - Получение информации о доставке по отрпавителю
-- GET api/v1/deliveries?dt=...&id=...
-  - Получение списка довых доставок для сервиса логистики
-  - Возвращает первые n delivery_id в отсортированном порядке по id, которые имеют creation_date больше чем dt и delivery_id больше чем id.
 
 ### Модель данных
 ```puml

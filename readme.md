@@ -7,7 +7,7 @@
 **Номер варианта**: 6
 
 - [x] [lab 01](docs) - Проектирование информационной системы
-- [ ] [lab 02](#) - Stateful сервис
+- [x] [lab 02](backend) - Stateful сервис
 - [ ] [lab 03](#) - Database sharding
 - [ ] [lab 04](#) - Data Cache
 - [ ] [lab 05](#) - CQRS
